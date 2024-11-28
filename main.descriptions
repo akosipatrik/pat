@@ -1,0 +1,155 @@
+# Function to display a new frame when an image is clicked
+def show_image_details(img_name):
+    # Clear any existing content in the content_frame
+    for widget in content_frame.winfo_children():
+        widget.destroy()
+
+    # Create a new frame inside content_frame for displaying image details
+    details_frame = customtkinter.CTkFrame(content_frame, 
+                                           fg_color="white")
+    details_frame.pack(fill="both", expand=True)
+
+    # Load the image for the blurred background
+    image_path = os.path.join(image_directory, img_name)
+    if os.path.exists(image_path):
+        # Open the image
+        image = Image.open(image_path)
+        resized_image = image.resize((200, 250), Image.LANCZOS)
+        ctk_image = customtkinter.CTkImage(light_image=resized_image, 
+                                           dark_image=resized_image, 
+                                           size=(200, 250))
+
+        # Load the clicked image for the main details
+        image_resized = image.resize((300, 450), Image.LANCZOS)  # Adjust size as needed
+        ctk_image = customtkinter.CTkImage(light_image=image_resized, 
+                                           dark_image=image_resized, 
+                                           size=(300, 450))
+
+        # Display the main image
+        image_label = customtkinter.CTkLabel(details_frame, 
+                                             image=ctk_image, 
+                                             text="", )
+        
+        image_label.place(x=60, y=35)
+        image_label.image = ctk_image  # Prevent garbage collection of the image
+
+        # Add label with image name or description
+        name_without_extension = os.path.splitext(img_name)[0]
+        label = customtkinter.CTkLabel(details_frame, 
+                                       text=name_without_extension, 
+                                       text_color="black",
+                                       wraplength=500,
+                                       justify='left',
+                                       font=("Impact", 50))
+        label.place(x=400 , y=50)
+        
+        # Descriptions for each image
+        descriptions = {
+            "The Rider's Legend by SaoiMarie. Tremble.jpg": "In a world teetering on the edge of myth and reality, "
+            "The Rider's Legend spins a gripping tale about a mysterious figure who rides under the cover of darkness, "
+            "instilling both fear and fascination in the hearts of the people. As rumors of the rider’s supernatural "
+            "abilities spread, a group of disparate individuals is drawn together, bound by fate to unravel the enigma "
+            "of the rider. As they journey across dangerous landscapes and confront sinister forces, the heroes realize "
+            "that the truth behind the legend may be more terrifying—and more personal—than they ever imagined. "
+            "This story is filled with suspense, rich lore, and epic adventure, where the line between hero and villain "
+            "is constantly blurred.",
+
+            "The Rookie Pirates by Robin Amor.jpg": "The Rookie Pirates follows an ambitious, ragtag crew setting sail "
+            "on their maiden voyage into the perilous world of piracy. Led by an inexperienced but determined captain, "
+            "they face off against veteran pirates, navigate treacherous waters, and chase after legendary treasures. "
+            "Along the way, they confront not only external threats but also the growing pains of learning what it truly "
+            "means to be pirates. As they grapple with loyalty, ambition, and trust, each member of the crew finds themselves "
+            "questioning their motives and dreams. This is an exhilarating adventure about camaraderie, the quest for glory, "
+            "and the realization that the sea is as unpredictable as the people who sail it.",
+
+            "Ocean Blue by Olivia Vaughn.jpg": "Set in a tranquil seaside town, Ocean Blue is a reflective and emotionally "
+            "rich narrative centered around the protagonist, who returns to the ocean after a long absence to confront unresolved "
+            "grief and the choices of the past. As she reestablishes old connections and forges new ones, the calming yet ever-changing "
+            "rhythm of the ocean becomes a metaphor for her own journey toward healing and self-acceptance. The novel beautifully intertwines "
+            "themes of love, loss, and the relentless pull of the sea, exploring how the people we meet and the places we hold dear shape our "
+            "identities. This evocative, character-driven story captures the subtle and powerful ways in which the ocean mirrors the "
+            "complexities of human emotion.",
+            
+            "Throne of Glass by Sarah J. Maas's.jpg": "'Throne of Glass' is the first book in Sarah J. Maas's fantasy series, following Celaena Sardothien, a talented assassin "
+            "imprisoned in a brutal mine. Offered a chance at freedom, she must compete to become the king's champion. As she navigates the "
+            "deadly competition, she uncovers dark secrets and confronts her own past, all while navigating complex relationships with Prince "
+            "Dorian and the captain of the guard, Chaol. The story blends action, romance, and magic in a richly built world.",
+
+            "A Court of Thorns and Roses by Sarah J Maas.jpg": "'A Court of Thorns and Roses' by Sarah J. Maas is a fantasy retelling of 'Beauty and the Beast.' "
+            "It follows Feyre Archeron, a human huntress who kills a wolf in the woods, only to discover it was a faerie in disguise. As punishment, she is taken "
+            "to the magical land of Prythian by Tamlin, a powerful High Lord. There, Feyre navigates a world of magic, danger, and political intrigue while grappling "
+            "with her growing feelings for Tamlin. The story explores themes of love, sacrifice, and the struggle between humans and faeries, setting the stage for an epic fantasy series.",
+
+            "The Hunger Games by Suzanne Collins.jpg": "'The Hunger Games' by Suzanne Collins is a dystopian novel set in a future where the totalitarian nation of Panem divides its population "
+            "into districts. Each year, the Capitol hosts the Hunger Games, a brutal televised competition where one boy and one girl from each district must fight to the death. The story follows "
+            "Katniss Everdeen, a 16-year-old girl from District 12 who volunteers to take her sister’s place in the Games. As she navigates the brutal challenges and forms alliances, Katniss becomes a "
+            "symbol of resistance against the oppressive regime, exploring themes of survival, sacrifice, and the consequences of violence.",
+
+            "Family Comes First by Mason Gitzgibbon.jpg": "'Family Comes First' by Mason Gitzgibbon is a poignant exploration of familial bonds and the complexities of relationships. The story follows "
+            "the protagonist as they navigate the challenges of love, loyalty, and personal growth within their family dynamics. Through moments of conflict and connection, the narrative highlights the "
+            "importance of prioritizing family while also addressing individual desires and struggles. This heartfelt tale captures the essence of what it means to support one another, even in the face of adversity.",
+
+            "Hide and Seek by Jakayla Toney.jpg": "'Hide and Seek' by Jakayla Toney is a gripping psychological thriller that delves into themes of trust, deception, and survival. The story follows a young protagonist "
+            "who becomes entangled in a high-stakes game of cat and mouse, where secrets unravel and hidden dangers lurk around every corner. As they navigate through twists and turns, the tension builds, revealing the "
+            "lengths one will go to protect themselves and those they love. This captivating narrative keeps readers on the edge of their seats, exploring the dark sides of human nature and the complexities of relationships. ",
+
+            "The Cellar by Natasha Preston.jpg": " 'The Cellar' by Natasha Preston is a chilling thriller that follows the story of Summer, a teenager who is kidnapped and held captive in a secret cellar by a man named Lewis. "
+            "As she struggles to survive in this confined space, Summer must navigate the psychological torment of her captor while also trying to maintain her sense of self. The narrative alternates between Summer's harrowing "
+            "experiences in captivity and the efforts of her family and friends to find her. This gripping tale explores themes of resilience, fear, and the lengths one will go to escape from darkness.",
+
+            "Invisible Armies by Jon Evans.jpg":  "'Invisible Armies' by Jon Evans is a thought-provoking exploration of the complexities of modern warfare and the role of technology in shaping conflict. "
+            "The narrative delves into the unseen forces that influence battles, including cyber warfare, espionage, and the impact of social media. Through a blend of real-world insights and fictional elements, Evans examines how these, "
+            "invisible armies, affect soldiers and civilians alike. The book invites readers to consider the moral implications of warfare in the digital age and the challenges of understanding conflicts that are increasingly conducted out of sight.",
+
+            "The Purgatorium by Eva Pohler.jpg": "'The Purgatoriu' by Eva Pohler is a gripping fantasy novel that follows the story of a group of souls trapped in a mysterious afterlife. As they navigate the eerie and unsettling realm known as the Purgatorium, "
+            "they confront their pasts and the choices that led them there. The narrative explores themes of redemption, self-discovery, and the struggle to move on from guilt and regret. With suspenseful twists and richly developed characters, Pohler invites readers "
+            "to ponder the nature of forgiveness and the journey toward healing.",
+
+            "The Silent Patient by Alex Michaelides.jpg": "'The Silent Patient' by Alex Michaelides is a psychological thriller that centers on Alicia Berenson, a famous painter who inexplicably shoots her husband and then stops speaking entirely. Committed to a secure "
+            "psychiatric facility, she becomes the obsession of Theo Faber, a psychotherapist determined to uncover the truth behind her silence. As Theo delves into Alicia's past and the events leading up to the murder, the story unravels layers of deception, trauma, and "
+            "psychological intrigue, ultimately leading to a shocking twist that challenges perceptions of truth and sanity.",
+
+            "The Love Hypothesis by Ali Hazelwood.jpg": "'The Love Hypothesis' by Ali Hazelwood is a charming contemporary romance that follows Olive Smith, a PhD student who finds herself in a fake relationship with Adam Carlsen, a renowned but grumpy professor. To convince "
+            "her friends that she’s moved on from her ex, Olive persuades Adam to pose as her boyfriend. As they navigate their unconventional arrangement, real feelings begin to develop, leading to a delightful blend of humor, academic rivalry, and heartfelt moments. The novel "
+            "explores themes of love, ambition, and the challenges of balancing personal and professional lives.",
+
+            "After by Anna Todd.jpg":  "'After' by Anna Todd is a passionate romance novel that follows the intense relationship between Tessa Young, a dedicated college student, and Hardin Scott, a brooding and rebellious outsider. Their worlds collide when Tessa, initially "
+            "focused on her studies and a stable relationship, finds herself drawn to Hardin's enigmatic personality. As their connection deepens, Tessa discovers the complexities of love, heartbreak, and self-discovery. The novel explores themes of desire, emotional turmoil, "
+            "and the transformative power of love, set against the backdrop of college life.",
+
+            "Meant for You by Anya.jpg": "'Meant for You' by Anya is a heartfelt romance that follows the journey of two characters who find themselves at a crossroads in life. When they unexpectedly cross paths, their connection sparks an exploration of love, destiny, and the "
+            "choices that shape their futures. As they navigate personal challenges and uncover hidden truths, they must decide if they are truly meant to be together. The story beautifully captures the ups and downs of relationships, highlighting themes of fate, growth, and the "
+            "power of love to heal and transform.",
+
+            "The Four Bad Boys and Me by Tina Lata.jpg": " 'The Four Bad Boys and Me' by Tina Lata is a contemporary romance that follows the journey of a young woman navigating life and love while dealing with four enigmatic boys known for their rebellious reputations. As she finds "
+            "herself entangled with each of them, she uncovers their secrets and struggles, all while exploring her own identity and desires. The story blends humor, drama, and romance, highlighting themes of friendship, loyalty, and the complexities of young love in a captivating narrative. ",
+
+            "Daddy Material by Oikawa Tooru.jpg": " 'Daddy Material' by Oikawa Tooru is a lighthearted romance that explores the unexpected relationship between a young woman and an older man who is a devoted single father. As they navigate the challenges of parenting and their growing feelings "
+            "for each other, they face societal expectations and personal insecurities. The story combines humor and heartfelt moments, highlighting themes of love, family, and the complexities of building a life together. With charming characters and a warm narrative, it captures the joys and "
+            "trials of finding love in unconventional circumstances. ",
+
+            "College Heart-Throb Secret Husband by Winter bear.jpg": " 'College Heart-Throb/Secret Husband' by Winter Bear is a story available on Wattpad that revolves around a complex relationship between two characters, y/n and Tae. The narrative begins with a dialogue that highlights the "
+            "tension between them, where y/n expresses her reluctance to marry Tae, who responds with indifference. This sets the stage for exploring their relationship dynamics and the challenges they face. ",
+
+        }
+        
+        # Display the appropriate description
+        descript_text = descriptions.get(img_name, "No description available for this image.")
+
+        descriptions_frame = customtkinter.CTkFrame(
+            details_frame,  fg_color="lightgray", corner_radius=10,)
+        
+        descriptions_frame.place(x=50, y=300, width=500, height=200)
+
+        descriptions_label = customtkinter.CTkLabel(details_frame, 
+                                   text=descript_text, 
+                                   text_color="black",
+                                   font=("Arail", 16), 
+                                   wraplength=800, 
+                                   justify="left",  
+                                   )
+        
+        descriptions_label.place(x=10, y=10)
+
+    else:
+        print(f"Error: {image_path} not found.")
